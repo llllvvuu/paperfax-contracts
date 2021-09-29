@@ -24,7 +24,24 @@ See [duppgrade](https://github.com/rari-capital/duppgrade) (also a global instal
 
 # Spin up testnet
 ```
-bash testnet.sh
+sh testnet.sh
 ```
 The last line printed out is the contract address.
 TODO: print this into a file for the frontend to consume
+
+## Contract Interaction CLI
+Make sure your shell environment is set up (rerun this for every new shell or `sh testnet.sh` run):
+```
+source testenv.sh
+```
+### Read from contract
+Example:
+```
+seth call $CONTRACT_ADDRESS "auditIdsByUser(address, uint)(uint)" $USER_ADDRESS $AUDIT_INDEX
+```
+
+### Write from contract
+Example:
+```
+seth send $CONTRACT_ADDRESS "requestAudit(uint)" $PAPERFAX_ID
+```
