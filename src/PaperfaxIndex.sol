@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: MIT
+
+pragma solidity ^0.8.6;
+pragma experimental ABIEncoderV2;
+
 contract PaperfaxIndex { // extends ERC1155?
   struct Audit {
     uint paperfaxId;
@@ -12,25 +17,30 @@ contract PaperfaxIndex { // extends ERC1155?
   }
 
   struct Paperfax {
-    string[] paperURIs;
+    // Store paperURIs as single string, e.g. "https://arxiv.org/x,ipfs://hash"
+    // make sure to URL encode the URIs so they don't have commas
+    // https://stackoverflow.com/questions/42716858/string-array-in-solidity
+    string paperURIs;
     uint[] auditIds;
     address[] requestedBy;
   }
 
-  Paperfax[] public paperfaxes;
-  Audit[] public audits;
+  Paperfax[] paperfaxes;
+  Audit[] audits;
   mapping (address => uint[]) public auditIdsByUser;
 
-  function initializePaperfax(string[] paperURIs) external {
+  constructor() {}
+
+  function initializePaperfax(string memory _paperURIs) external {
   }
 
-  function requestAudit(uint paperfaxId) external {
+  function requestAudit(uint _paperfaxId) external {
   }
 
-  function createAudit(uint paperfaxId) external {
+  function createAudit(uint _paperfaxId) external {
   }
 
-  function upvoteAudit(uint auditId) external { // stretch?
+  function upvoteAudit(uint _auditId) external { // stretch?
     // remove existing vote first
   }
 
