@@ -30,7 +30,7 @@ The last line printed out is the contract address.
 TODO: print this into a file for the frontend to consume
 
 ## Contract Interaction CLI
-Make sure your shell environment is set up (rerun this for every new shell or `sh testnet.sh` run):
+Make sure your shell environment is set up (rerun this for every new shell and/or `sh testnet.sh` run):
 ```
 source testenv.sh
 ```
