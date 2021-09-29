@@ -22,12 +22,19 @@ This will be a bit slow.
 # DappTools Upgrade
 See [duppgrade](https://github.com/rari-capital/duppgrade) (also a global install)
 
+# Build Contracts
+```
+dapp build
+```
+
 # Spin up testnet
 ```
 sh testnet.sh
 ```
 The last line printed out is the contract address.
 TODO: print this into a file for the frontend to consume
+
+To do both: `dapp build && sh testnet.sh`
 
 ## Contract Interaction CLI
 Make sure your shell environment is set up (rerun this for every new shell and/or `sh testnet.sh` run):
