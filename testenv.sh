@@ -1,3 +1,4 @@
+export ETH_GAS=10000000
 export ETH_RPC_URL="http://127.0.0.1:8545"
 export ETH_KEYSTORE="$HOME/.dapp/testnet/8545/keystore"
 export ETH_PASSWORD=/dev/null
