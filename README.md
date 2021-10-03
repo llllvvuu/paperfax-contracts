@@ -31,8 +31,7 @@ dapp build
 ```
 sh testnet.sh
 ```
-The last line printed out is the contract address.
-TODO: print this into a file for the frontend to consume
+This will write the deployed contract address to `contract.txt`.
 
 To do both: `dapp build && sh testnet.sh`
 
@@ -41,14 +40,20 @@ Make sure your shell environment is set up (rerun this for every new shell and/o
 ```
 source testenv.sh
 ```
+and the testnet is still running.
+
+### Write to contract
+Example:
+```
+seth send $CONTRACT_ADDRESS "initializePaperfax(string[])" "[\"https://bitcoin.org/bitcoin.pdf\"]"
+```
+As different user (`sh testnet.sh` will print out 5 different test addresses):
+```
+env ETH_FROM=0x... seth send $CONTRACT_ADDRESS "requestAudit(uint)" 0
+```
+
 ### Read from contract
 Example:
 ```
-seth call $CONTRACT_ADDRESS "auditIdsByUser(address, uint)(uint)" $USER_ADDRESS $AUDIT_INDEX
-```
-
-### Write from contract
-Example:
-```
-seth send $CONTRACT_ADDRESS "requestAudit(uint)" $PAPERFAX_ID
+seth call $CONTRACT_ADDRESS "numPaperfaxes()(uint)"
 ```

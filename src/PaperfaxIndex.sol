@@ -35,8 +35,8 @@ contract PaperfaxIndex { // extends ERC1155?
     mapping (uint => Paperfax) paperfaxes;
     mapping (uint => Audit) audits;
     mapping (address => uint[]) public userToAudits;
-    uint numPaperfaxes;
-    uint numAudits;
+    uint public numPaperfaxes;
+    uint public numAudits;
 
     constructor() {}
 
