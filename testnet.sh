@@ -1,10 +1,11 @@
-KEYSTORE="$HOME/.dapp/testnet/8545/keystore"
-rm -rf "$KEYSTORE"
+CONTRACT_NAME="PaperfaxIndex"
+TESTNET="$HOME/.dapp/testnet/8545"
+rm -rf "$TESTNET"
 (
-    while [ ! -f "$HOME/.dapp/testnet/8545/config/account" ] || [ ! -d "$KEYSTORE" ]; do
+    while [ ! -f "$TESTNET/config/account" ] || [ ! -d "$TESTNET/keystore" ]; do
         sleep 1s
     done
-    . testenv.sh
-    dapp create PaperfaxIndex | tail -n 1 > contract.txt
+    source testenv.sh
+    dapp create "$CONTRACT_NAME" | tail -n 1 > contract.txt
 ) &
 dapp testnet --accounts 5
