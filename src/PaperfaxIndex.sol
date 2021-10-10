@@ -10,8 +10,9 @@ contract PaperfaxIndex { // extends ERC1155?
     }
 
     enum Verdict {
-        ENDORSED,
-        NEEDS_REVIEW
+        GREEN,
+        YELLOW,
+        RED
     }
 
     struct Audit {
@@ -35,14 +36,49 @@ contract PaperfaxIndex { // extends ERC1155?
     mapping (uint => Paperfax) paperfaxes;
     mapping (uint => Audit) audits;
     mapping (address => uint[]) public userToAudits;
+    mapping (string => uint) public uriToPaperfaxId;
     uint public numPaperfaxes;
     uint public numAudits;
 
-    constructor() {}
-
     function initializePaperfax(string[] memory _paperURIs) external {
-        Paperfax storage paperfax = paperfaxes[numPaperfaxes++];
+        Paperfax storage paperfax = paperfaxes[++numPaperfaxes];
         paperfax.paperURIs = _paperURIs;
+        for (uint i = 0; i < _paperURIs.length; i++) {
+            uriToPaperfaxId[_paperURIs[i]] = numPaperfaxes;
+        }
+    }
+
+    function paperfaxDetails(string calldata _paperURI) external view returns(
+        uint paperfaxId,
+        Verdict[] memory verdicts,
+        string[] memory ipfsHashes,
+        uint32[] memory numMinorIssues,
+        uint32[] memory numMajorIssues,
+        uint32[] memory numRecommendations,
+        uint32[] memory upvotes,
+        uint32[] memory downvotes
+    ) {
+        paperfaxId = uriToPaperfaxId[_paperURI];
+        Paperfax storage paperfax = paperfaxes[paperfaxId];
+        uint numPaperAudits = paperfax.auditIds.length;
+        verdicts = new Verdict[](numPaperAudits);
+        ipfsHashes = new string[](numPaperAudits);
+        numMinorIssues = new uint32[](numPaperAudits);
+        numMajorIssues = new uint32[](numPaperAudits);
+        numRecommendations = new uint32[](numPaperAudits);
+        upvotes = new uint32[](numPaperAudits);
+        downvotes = new uint32[](numPaperAudits);
+
+        for (uint i = 0; i < numPaperAudits; i++) {
+            Audit storage audit = audits[paperfax.auditIds[i]];
+            verdicts[i] = audit.verdict;
+            ipfsHashes[i] = audit.ipfsHash;
+            numMinorIssues[i] = audit.numMinorIssues;
+            numMajorIssues[i] = audit.numMajorIssues;
+            numRecommendations[i] = audit.numRecommendations;
+            upvotes[i] = audit.upvotes;
+            downvotes[i] = audit.downvotes;
+        }
     }
 
     function requestAudit(uint _paperfaxId) external {
@@ -52,7 +88,7 @@ contract PaperfaxIndex { // extends ERC1155?
     function createAudit(
         uint _paperfaxId,
         Verdict _verdict,
-        string memory _ipfsHash,
+        string calldata _ipfsHash,
         uint32 _numMinorIssues,
         uint32 _numMajorIssues,
         uint32 _numRecommendations
@@ -60,14 +96,16 @@ contract PaperfaxIndex { // extends ERC1155?
         // when you submit an audit,
         // call the IPFS API/SDK to upload the comments and get the hash,
         // then submit the ethereum tx with that hash
-        Audit storage audit = audits[numAudits];
+        Audit storage audit = audits[++numAudits];
+        Paperfax storage paperfax = paperfaxes[_paperfaxId];
+        paperfax.auditIds.push(numAudits);
         audit.paperfaxId = _paperfaxId;
         audit.verdict = _verdict;
         audit.ipfsHash = _ipfsHash;
         audit.numMinorIssues = _numMinorIssues;
         audit.numMajorIssues = _numMajorIssues;
         audit.numRecommendations = _numRecommendations;
-        userToAudits[msg.sender].push(numAudits++);
+        userToAudits[msg.sender].push(numAudits);
     }
 
     function upvoteAudit(uint _auditId, Vote _type) external {
